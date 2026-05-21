@@ -62,3 +62,34 @@ R = recurrence(sum/2, base(0, 0), step(n, rec(n-1)+n)).
 swipl -q -g run_tests -t halt tests/test_stage1.pl
 swipl -q -g run_tests -t halt tests/test_stage2.pl
 ```
+
+## Stage 3 implementation
+
+Stage 3 Gaussian discovery is implemented in:
+
+- `src/stage3_discovery.pl`
+
+Implemented Stage 3 components:
+
+- matrix builder (`build_matrix/4`)
+- finite differences (`finite_differences/2`)
+- polynomial fitting (`polynomial_fit/3`)
+- Gaussian elimination (`gaussian_elimination/3`)
+- invariant extraction (`extract_invariant/3`)
+- formula discovery (`discover_formula/2`)
+
+### Stage 3 acceptance example
+
+In SWI-Prolog:
+
+```prolog
+?- [src/stage3_discovery].
+?- discover_formula(sum, F).
+F = n*(n+1)/2.
+```
+
+### Run Stage 3 tests
+
+```bash
+swipl -q -g run_tests -t halt tests/test_stage3.pl
+```
