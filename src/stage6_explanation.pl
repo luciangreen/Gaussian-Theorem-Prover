@@ -111,7 +111,7 @@ explanation_story(Result, Theorem, Evidence, Lines, Trace, story(lines(Lines), t
     failure_explanation(Theorem, Result, FailureLine).
 
 discovered_formula_text(evidence(StrategiesTerm, lemmas(Lemmas), _Ranked, _Fallback, _Best), FormulaText) :-
-    nonvar(StrategiesTerm),
+    StrategiesTerm = strategies(_),
     member(lemma(discovered_formula(_Predicate, Formula)), Lemmas),
     term_string(Formula, FormulaText),
     !.

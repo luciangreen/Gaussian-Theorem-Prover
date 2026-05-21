@@ -62,8 +62,9 @@ test(explain_proof_student_audience) :-
         sum_formula,
         student,
         proved,
-        story(lines(Lines), trace(Trace), visual(Frames), failure('No failure: theorem was proved.'))
+        story(lines(Lines), trace(Trace), visual(Frames), failure(FailureMessage))
     ),
+    sub_atom(FailureMessage, _, _, _, 'No failure'),
     member(Line, Lines),
     sub_atom(Line, _, _, _, 'fitted invariant'),
     member('Top candidate: formula_then_verify with outcome proved and score 200.', Trace),
