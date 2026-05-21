@@ -13,7 +13,9 @@ def _to_fraction(value: Any) -> Fraction:
         return Fraction(value)
     if isinstance(value, float):
         return Fraction(str(value))
-    return Fraction(value)
+    if isinstance(value, str):
+        return Fraction(value)
+    raise TypeError(f"Unsupported numeric value for fraction conversion: {value!r}")
 
 
 def _format_fraction(value: Fraction) -> str:
@@ -29,7 +31,7 @@ class PolynomialDiscoveryAgent:
         self.max_degree = max_degree
 
     def build_coefficient_matrix(self, examples: list[dict[str, Any]], degree: int) -> list[list[Fraction]]:
-        """Build augmented matrix for degree-*degree* polynomial fitting."""
+        """Build an augmented matrix for fitting a polynomial of degree `degree`."""
         needed = degree + 1
         if len(examples) < needed:
             raise ValueError(f"Need at least {needed} examples to fit degree {degree}")
