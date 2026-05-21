@@ -5,6 +5,8 @@ from __future__ import annotations
 from fractions import Fraction
 from typing import Any
 
+from src.gaussian import GaussianEliminationAgent
+
 
 def _to_fraction(value: Any) -> Fraction:
     if isinstance(value, Fraction):
@@ -35,6 +37,7 @@ class PolynomialDiscoveryAgent:
 
     def __init__(self, max_degree: int = 4):
         self.max_degree = max_degree
+        self.gaussian_agent = GaussianEliminationAgent()
 
     def build_coefficient_matrix(self, examples: list[dict[str, Any]], degree: int) -> list[list[Fraction]]:
         """Build an augmented matrix for fitting a polynomial of degree `degree`."""
@@ -77,7 +80,8 @@ class PolynomialDiscoveryAgent:
                 break
             attempted_degrees.append(degree)
             matrix = self.build_coefficient_matrix(normalized, degree)
-            coefficients = self._solve_augmented_matrix(matrix)
+            gaussian_result = self.gaussian_agent.solve(matrix)
+            coefficients = self._solve_augmented_matrix(gaussian_result)
             if coefficients is None:
                 continue
             if self._candidate_matches_all_points(coefficients, normalized):
@@ -88,6 +92,7 @@ class PolynomialDiscoveryAgent:
                     "coefficients_readable": [_format_fraction(c) for c in coefficients],
                     "formula": self._format_formula(coefficients),
                     "matrix": matrix,
+                    "gaussian_trace": gaussian_result["proof_trace"],
                     "status": "found",
                     "attempted_degrees": attempted_degrees,
                     "skipped_degrees": skipped_degrees,
@@ -120,43 +125,11 @@ class PolynomialDiscoveryAgent:
             value = (value * x) + coefficient
         return value
 
-    def _solve_augmented_matrix(self, matrix: list[list[Fraction]]) -> list[Fraction] | None:
-        """Solve a square augmented matrix with exact Gaussian elimination."""
-        size = len(matrix)
-        work = [row[:] for row in matrix]
-
-        for col in range(size):
-            pivot = None
-            for row in range(col, size):
-                if work[row][col] != 0:
-                    pivot = row
-                    break
-            if pivot is None:
-                return None
-            if pivot != col:
-                work[col], work[pivot] = work[pivot], work[col]
-
-            pivot_value = work[col][col]
-            work[col] = [value / pivot_value for value in work[col]]
-
-            for row in range(col + 1, size):
-                factor = work[row][col]
-                if factor == 0:
-                    continue
-                work[row] = [
-                    work[row][i] - factor * work[col][i]
-                    for i in range(size + 1)
-                ]
-
-        coefficients = [Fraction(0) for _ in range(size)]
-        for row in range(size - 1, -1, -1):
-            if work[row][row] == 0:
-                return None
-            rhs = work[row][size]
-            for col in range(row + 1, size):
-                rhs -= work[row][col] * coefficients[col]
-            coefficients[row] = rhs / work[row][row]
-        return coefficients
+    def _solve_augmented_matrix(self, gaussian_result: dict[str, Any]) -> list[Fraction] | None:
+        """Extract coefficients from a GaussianEliminationAgent solve result."""
+        if gaussian_result.get("status") != "solved":
+            return None
+        return gaussian_result["solution"]
 
     def _format_formula(self, coefficients: list[Fraction]) -> str:
         degree = len(coefficients) - 1

@@ -9,7 +9,7 @@ See [pr1.txt](pr1.txt) for the full project specification.
 | 1 | Parser Agent | ✅ Complete |
 | 2 | Example Generation Agent | ✅ Complete |
 | 3 | Polynomial Discovery Agent | ✅ Complete |
-| 4 | Gaussian Elimination Agent | 🔲 Planned |
+| 4 | Gaussian Elimination Agent | ✅ Complete |
 | 5 | Induction Proof Agent | 🔲 Planned |
 | 6 | Child Explanation Agent | 🔲 Planned |
 | 7 | Web Visualisation Agent | 🔲 Planned |
@@ -111,4 +111,29 @@ Examples as input/output pairs from Stage 2.
 
 ```bash
 python -m pytest tests/test_polynomial.py -v
+```
+
+## Stage 4 — Gaussian Elimination Agent
+
+### Input
+
+Square augmented matrix from Stage 3 candidate equations.
+
+### Output
+
+- Solved coefficients using exact rational arithmetic.
+- Row-by-row operation log in plain English.
+- Machine-readable proof trace containing matrix snapshots.
+
+### Requirements implemented
+
+- Solves coefficient matrices step by step.
+- Uses fractions (`fractions.Fraction`) without floating point.
+- Explains each row operation in plain English.
+- Exports a machine-readable proof trace.
+
+### Running Gaussian-elimination tests
+
+```bash
+python -m pytest tests/test_gaussian.py -v
 ```
