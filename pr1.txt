@@ -1,0 +1,376 @@
+Gaussian Theorem Prover — GitHub Agent Program Requirements
+
+Project name
+
+Gaussian Theorem Prover
+Alternative names: GTP, Gaussian Explanation Prover, GaussProof, Recursive Formula Prover.
+
+Core goal
+
+Build a theorem-proving and explanation system that takes recursive, logical, or symbolic programs and discovers possible closed-form rules using Gaussian elimination, then proves the discovered rule using induction, rewriting, or symbolic verification.
+
+The prover must be understandable to children, students, and non-experts.
+
+⸻
+
+1. Main capability
+
+The system should accept input such as:
+
+sum(0, 0).
+sum(N, S) :-
+    N > 0,
+    N1 is N - 1,
+    sum(N1, S1),
+    S is S1 + N.
+
+It should produce:
+
+sum(N) = N*(N+1)/2
+
+Then explain:
+
+The recursion adds 1, then 2, then 3, and so on.
+This creates triangular numbers.
+Gaussian elimination finds the hidden quadratic rule.
+Induction proves the rule is always true.
+
+⸻
+
+2. Required architecture
+
+Input Program / Spec
+→ Parser
+→ Example Generator
+→ Pattern Detector
+→ Polynomial Candidate Builder
+→ Gaussian Elimination Solver
+→ Candidate Formula Generator
+→ Proof Verifier
+→ Explanation Generator
+→ Web Visualisation
+
+⸻
+
+3. GitHub agent roles
+
+Agent 1 — Parser Agent
+
+Responsible for reading Prolog-like input.
+
+Requirements:
+
+- Parse facts and recursive rules.
+- Detect base cases.
+- Detect recursive calls.
+- Extract arithmetic updates.
+- Convert the program into an internal representation.
+
+Example output:
+
+{
+  "predicate": "sum",
+  "base_case": "sum(0)=0",
+  "recurrence": "sum(n)=sum(n-1)+n"
+}
+
+⸻
+
+Agent 2 — Example Generation Agent
+
+Generates input-output examples.
+
+Example:
+
+sum(0)=0
+sum(1)=1
+sum(2)=3
+sum(3)=6
+sum(4)=10
+sum(5)=15
+
+Requirements:
+
+- Execute safe recursive definitions.
+- Limit recursion depth.
+- Detect nontermination.
+- Store examples as pairs.
+
+⸻
+
+Agent 3 — Polynomial Discovery Agent
+
+Tries to fit a polynomial rule.
+
+For sum(N):
+
+Assume f(n) = an² + bn + c
+
+Then build equations:
+
+a(0²)+b(0)+c = 0
+a(1²)+b(1)+c = 1
+a(2²)+b(2)+c = 3
+
+Requirements:
+
+- Try degree 0, 1, 2, 3, 4.
+- Build coefficient matrices.
+- Use exact rational arithmetic.
+- Reject formulas that fail test cases.
+
+⸻
+
+Agent 4 — Gaussian Elimination Agent
+
+Solves coefficient matrices step by step.
+
+Example:
+
+[0 0 1 | 0]
+[1 1 1 | 1]
+[4 2 1 | 3]
+
+Output:
+
+a = 1/2
+b = 1/2
+c = 0
+
+Final formula:
+
+f(n) = 1/2 n² + 1/2 n
+     = n(n+1)/2
+
+Requirements:
+
+- Show row operations.
+- Use fractions, not floating point.
+- Explain each row operation in plain English.
+- Export machine-readable proof trace.
+
+⸻
+
+Agent 5 — Induction Proof Agent
+
+The Gaussian step discovers the formula.
+The induction step proves it.
+
+For sum(N):
+
+Base case:
+f(0)=0.
+Inductive assumption:
+Assume sum(n)=n(n+1)/2.
+Step:
+sum(n+1)=sum(n)+(n+1)
+        = n(n+1)/2 + (n+1)
+        = (n+1)(n+2)/2.
+
+Requirements:
+
+- Prove base case.
+- Prove inductive step.
+- Use symbolic simplification.
+- Mark result as proved only if induction succeeds.
+
+⸻
+
+Agent 6 — Child Explanation Agent
+
+Transforms formal proof into understandable language.
+
+Example:
+
+The program counts by adding the next number each time.
+The numbers grow like a triangle.
+Gaussian elimination is like balancing number puzzles until the hidden rule appears.
+Induction checks that the rule works at the start and keeps working forever.
+
+Requirements:
+
+- Produce beginner explanation.
+- Produce technical explanation.
+- Produce proof trace.
+- Produce classroom worksheet version.
+
+⸻
+
+Agent 7 — Web Visualisation Agent
+
+Creates a browser interface.
+
+Requirements:
+
+- Text area for Prolog-like input.
+- Run button.
+- Example table.
+- Matrix display.
+- Row-operation animation.
+- Candidate formula display.
+- Induction proof display.
+- Child-friendly explanation panel.
+
+Suggested stack:
+
+HTML
+CSS
+JavaScript
+Optional: Tau Prolog or custom JS interpreter
+Optional: SWI-Prolog backend
+
+⸻
+
+4. Repository structure
+
+gaussian-theorem-prover/
+│
+├── README.md
+├── requirements.md
+├── examples/
+│   ├── sum.pl
+│   ├── square_sum.pl
+│   ├── arithmetic_sequence.pl
+│   └── factorial_rejected.pl
+│
+├── src/
+│   ├── parser/
+│   ├── examples/
+│   ├── gaussian/
+│   ├── induction/
+│   ├── explanation/
+│   └── verifier/
+│
+├── web/
+│   ├── index.html
+│   ├── app.js
+│   └── style.css
+│
+├── tests/
+│   ├── test_parser.py
+│   ├── test_gaussian.py
+│   ├── test_induction.py
+│   └── test_examples.py
+│
+└── docs/
+    ├── theory.md
+    ├── child_explanations.md
+    └── proof_trace_format.md
+
+⸻
+
+5. Minimum working examples
+
+Example 1 — Sum
+
+Input:
+
+sum(0, 0).
+sum(N, S) :-
+    N > 0,
+    N1 is N - 1,
+    sum(N1, S1),
+    S is S1 + N.
+
+Expected output:
+
+sum(N) = N(N+1)/2
+Proof: induction successful.
+
+⸻
+
+Example 2 — Squares
+
+Input:
+
+square(N, S) :-
+    S is N * N.
+
+Expected output:
+
+square(N) = N²
+Proof: verified by symbolic simplification.
+
+⸻
+
+Example 3 — Arithmetic sequence
+
+Input:
+
+seq(0, 3).
+seq(N, S) :-
+    N > 0,
+    N1 is N - 1,
+    seq(N1, S1),
+    S is S1 + 2.
+
+Expected output:
+
+seq(N) = 2N + 3
+Proof: induction successful.
+
+⸻
+
+Example 4 — Factorial rejection
+
+Input:
+
+fact(0, 1).
+fact(N, F) :-
+    N > 0,
+    N1 is N - 1,
+    fact(N1, F1),
+    F is N * F1.
+
+Expected output:
+
+No polynomial formula found.
+Reason: factorial growth is not polynomial.
+Suggested proof method: multiplicative induction.
+
+⸻
+
+6. Acceptance tests
+
+The program passes when it can:
+
+1. Parse simple recursive Prolog programs.
+2. Generate correct example values.
+3. Build a Gaussian elimination matrix.
+4. Solve for polynomial coefficients.
+5. Reject false candidate formulas.
+6. Prove valid formulas by induction.
+7. Explain the proof in simple English.
+8. Display the process visually in a browser.
+
+⸻
+
+7. Stretch goals
+
+- CFG generation proof support.
+- Graph transformation proof support.
+- Recursive compression discovery.
+- Spec-to-Algorithm theorem generation.
+- Starlog output.
+- Prolog-to-JavaScript visual proof runner.
+- Export to Lean, Coq, or Isabelle.
+- Voice explanation mode for children.
+
+⸻
+
+8. Agent prompt for GitHub Copilot / coding agent
+
+Build a Gaussian Theorem Prover.
+The program should parse simple Prolog-like recursive definitions, generate input-output examples, fit polynomial formulas using exact Gaussian elimination, verify candidates using induction or symbolic rewriting, and produce child-understandable explanations.
+Implement the system in modular form with parser, example generator, Gaussian solver, proof verifier, explanation generator, and web visualiser.
+Start with examples for sum(N), arithmetic sequences, square(N), and factorial rejection. Use rational arithmetic, avoid floating point errors, and include tests for every module.
+
+⸻
+
+9. Core principle
+
+Gaussian elimination discovers the hidden formula.
+Induction proves the hidden formula.
+Explanation makes the proof understandable.
+
+That is the central design rule for the whole project.
