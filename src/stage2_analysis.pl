@@ -35,9 +35,11 @@ generate_examples(Clauses, Pred, MaxN, Examples) :-
     integer(MaxN),
     MaxN >= 0,
     extract_recurrence(Clauses, Pred, recurrence(_Pred, base(BaseN, BaseValue), step(n, rec(n-Delta)+n))),
-    Pred = Name/2,
+    Pred = Name/Arity,
+    Arity =:= 2,
     findall(example(fun(Name, [const(N), const(Value)])),
             ( between(BaseN, MaxN, N),
+              aligned_index(N, BaseN, Delta),
               recurrence_value(N, BaseN, BaseValue, Delta, Value)
             ),
             Examples).
@@ -96,6 +98,10 @@ has_additive_accumulator(Body, RecOutVar, NVar, SVar) :-
 
 body_call_term(call(Term), Term).
 body_call_term(Term, Term).
+
+aligned_index(N, BaseN, Delta) :-
+    Diff is N - BaseN,
+    0 is Diff mod Delta.
 
 recurrence_value(N, BaseN, BaseValue, _Delta, BaseValue) :-
     N =:= BaseN,
