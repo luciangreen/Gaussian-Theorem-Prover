@@ -65,9 +65,6 @@ base_clause(clause(fun(_Name, [const(BaseN), const(BaseValue)]), Body), BaseN, B
     integer(BaseN),
     number(BaseValue),
     \+ has_recursive_call(_/_, Body).
-base_clause(clause(fun(_Name, [const(BaseN), const(BaseValue)]), _Body), BaseN, BaseValue) :-
-    integer(BaseN),
-    number(BaseValue).
 
 recursive_step_clause(Pred, clause(fun(Name, [var(NVar), var(SVar)]), Body), Delta) :-
     Pred = Name/2,
