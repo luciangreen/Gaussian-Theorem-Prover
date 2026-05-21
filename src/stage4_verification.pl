@@ -8,19 +8,20 @@
             counterexample_search/3
           ]).
 
-:- use_module(stage3_discovery, [discover_formula/2]).
+:- use_module('./stage3_discovery', [discover_formula/2]).
 :- use_module(library(clpfd)).
 
 prove(Theorem) :-
     prove(Theorem, proved).
 
 prove(sum_formula, proved) :-
+    verification_bound(MaxN),
     discover_formula(sum, n*(n+1)/2),
-    mathematical_induction(sum_formula_property, 200, proved),
-    structural_induction(sum_list_formula_property, [[], [1], [1, 2], [1, 2, 3]], proved),
+    mathematical_induction(stage4_verification:sum_formula_property, MaxN, proved),
+    structural_induction(stage4_verification:sum_list_formula_property, [[], [1], [1, 2], [1, 2, 3]], proved),
     resolution([[not(sum_formula), proven_by_induction], [sum_formula]], proven_by_induction),
-    solve_constraints([N in 0..200, S #= N*(N+1) div 2], [N, S]),
-    \+ counterexample_search(sum_formula_property, 0-200, _).
+    solve_constraints([N in MaxN..MaxN, S #= N*(N+1) div 2], [MaxN, _]),
+    \+ counterexample_search(sum_formula_property, 0-MaxN, _).
 
 mathematical_induction(Property, MaxN, proved) :-
     integer(MaxN),
@@ -28,22 +29,15 @@ mathematical_induction(Property, MaxN, proved) :-
     call(Property, 0),
     forall(
         between(0, MaxN, K),
-        ( call(Property, K),
-          K1 is K + 1,
-          call(Property, K1)
-        )
+        inductive_implication(Property, K)
     ).
 
 structural_induction(Property, Samples, proved) :-
     is_list(Samples),
     call(Property, []),
     forall(
-        ( member(Structure, Samples),
-          call(Property, Structure)
-        ),
-        ( extend_successor_structure(Structure, NextStructure),
-          call(Property, NextStructure)
-        )
+        member(Structure, Samples),
+        structural_chain(Property, Structure)
     ).
 
 resolution(Clauses, Query) :-
@@ -89,7 +83,7 @@ recursive_sum(N, Sum) :-
     recursive_sum(N1, Prev),
     Sum is Prev + N.
 
-prefix_interval([], _Next).
+prefix_interval([], _).
 prefix_interval([Head | Tail], Expected) :-
     Head =:= Expected,
     NextExpected is Expected + 1,
@@ -105,6 +99,25 @@ extend_successor_structure(List, Extended) :-
     length(List, Len),
     NextValue is Len + 1,
     append(List, [NextValue], Extended).
+
+inductive_implication(Property, K) :-
+    call(Property, K),
+    K1 is K + 1,
+    call(Property, K1).
+
+structural_chain(Property, Structure) :-
+    length(Structure, Depth),
+    structural_chain_depth(Property, Depth, []).
+
+structural_chain_depth(Property, 0, Current) :-
+    call(Property, Current).
+structural_chain_depth(Property, Depth, Current) :-
+    Depth > 0,
+    call(Property, Current),
+    extend_successor_structure(Current, Next),
+    call(Property, Next),
+    NextDepth is Depth - 1,
+    structural_chain_depth(Property, NextDepth, Next).
 
 normalize_clauses(Clauses, Normalized) :-
     maplist(sort, Clauses, SortedPerClause),
@@ -140,3 +153,5 @@ tautology(Clause) :-
 
 negate_literal(not(Literal), Literal) :- !.
 negate_literal(Literal, not(Literal)).
+
+verification_bound(200).
