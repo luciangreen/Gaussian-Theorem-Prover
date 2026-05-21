@@ -31,3 +31,34 @@ false.
 ```bash
 swipl -q -g run_tests -t halt tests/test_stage1.pl
 ```
+
+## Stage 2 implementation
+
+Stage 2 recursive program analysis is implemented in:
+
+- `src/stage2_analysis.pl`
+
+Implemented Stage 2 components:
+
+- recurrence extraction (`extract_recurrence/3`)
+- call graph generation (`generate_call_graph/2`)
+- termination heuristics (`termination_heuristic/3`)
+- example generation (`generate_examples/4`)
+
+### Stage 2 example
+
+In SWI-Prolog:
+
+```prolog
+?- [src/stage2_analysis].
+?- example_program(P), extract_recurrence(P, sum/2, R).
+P = [clause(fun(sum, [const(0), const(0)]), []), clause(fun(sum, [var('N'), var('S')]), [call(fun(sum, [fun(sub, [var('N'), const(1)]), var('S1')])), call(fun(add, [var('S1'), var('N'), var('S')]))]), clause(fun(triangular, [var('N'), var('S')]), [call(fun(sum, [var('N'), var('S')]))])],
+R = recurrence(sum/2, base(0, 0), step(n, rec(n-1)+n)).
+```
+
+### Run Stage 1 + Stage 2 tests
+
+```bash
+swipl -q -g run_tests -t halt tests/test_stage1.pl
+swipl -q -g run_tests -t halt tests/test_stage2.pl
+```
