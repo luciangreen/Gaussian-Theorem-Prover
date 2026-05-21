@@ -18,7 +18,7 @@ test(rewrite_nested_term) :-
                  rule(fun(add, [const(0), var('A')]), var('A')),
                  fun(s, [var('X')])).
 
-test(check_proof_unifies_with_example) :-
+test(check_proof_returns_example_when_unbound) :-
     check_proof(Proof),
     Proof = proof(
         equation(fun(add, [const(0), var('X')]), var('X')),
