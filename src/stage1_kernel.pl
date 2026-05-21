@@ -32,24 +32,21 @@ unify_terms(A, B, Subst) :-
     normalize_subst(Subst0, Subst).
 
 rewrite_once(Term, Rule, Rewritten) :-
-    rewrite_here(Term, Rule, Rewritten),
-    !.
+    rewrite_here(Term, Rule, Rewritten).
 rewrite_once(fun(Name, Args), Rule, fun(Name, NewArgs)) :-
     rewrite_arg(Args, Rule, NewArgs).
 
 check_proof(Proof) :-
     var(Proof),
-    example_proof(Example),
-    check_proof(Example),
-    Proof = Example.
+    example_proof(Proof).
 check_proof(proof(equation(Left, Right), Steps)) :-
     apply_steps(equation(Left, Right), Steps, equation(FinalLeft, FinalRight)),
     unify_terms(FinalLeft, FinalRight, _).
 
 example_proof(
     proof(
-        equation(fun(add, [const(0), var(x)]), var(x)),
-        [rewrite_left(rule(fun(add, [const(0), var(a)]), var(a)))]
+        equation(fun(add, [const(0), var('X')]), var('X')),
+        [rewrite_left(rule(fun(add, [const(0), var('A')]), var('A')))]
     )
 ).
 
@@ -72,8 +69,7 @@ rewrite_here(Term, rule(Pattern, Replacement), Rewritten) :-
     apply_subst(Replacement, Subst, Rewritten).
 
 rewrite_arg([Arg | Rest], Rule, [NewArg | Rest]) :-
-    rewrite_once(Arg, Rule, NewArg),
-    !.
+    rewrite_once(Arg, Rule, NewArg).
 rewrite_arg([Arg | Rest], Rule, [Arg | NewRest]) :-
     rewrite_arg(Rest, Rule, NewRest).
 

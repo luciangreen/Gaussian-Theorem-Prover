@@ -22,7 +22,7 @@ In SWI-Prolog:
 ```prolog
 ?- [src/stage1_kernel].
 ?- check_proof(Proof).
-Proof = proof(equation(fun(add, [const(0), var(x)]), var(x)), [rewrite_left(rule(fun(add, [const(0), var(a)]), var(a)))]) ;
+Proof = proof(equation(fun(add, [const(0), var('X')]), var('X')), [rewrite_left(rule(fun(add, [const(0), var('A')]), var('A')))]) ;
 false.
 ```
 
