@@ -10,7 +10,7 @@ recursive Prolog-like programs and then proves them by induction.
 ```
 Input Program
   → Parser                  (Stage 1) ✅
-  → Example Generator       (Stage 2)
+  → Example Generator       (Stage 2) ✅
   → Polynomial Candidate Builder + Gaussian Elimination  (Stages 3-4)
   → Proof Verifier (Induction)  (Stage 5)
   → Explanation Generator   (Stage 6)
