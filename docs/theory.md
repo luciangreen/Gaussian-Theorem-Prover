@@ -11,7 +11,8 @@ recursive Prolog-like programs and then proves them by induction.
 Input Program
   → Parser                  (Stage 1) ✅
   → Example Generator       (Stage 2) ✅
-  → Polynomial Candidate Builder + Gaussian Elimination  (Stages 3-4)
+  → Polynomial Candidate Builder  (Stage 3) ✅
+  → Gaussian Elimination          (Stage 4)
   → Proof Verifier (Induction)  (Stage 5)
   → Explanation Generator   (Stage 6)
   → Web Visualisation        (Stage 7)
