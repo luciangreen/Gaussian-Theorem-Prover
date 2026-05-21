@@ -188,3 +188,35 @@ Explanation = explanation(sum_formula, child, proved, _).
 ```bash
 swipl -q -g run_tests -t halt tests/test_stage6.pl
 ```
+
+## Stage 7 implementation
+
+Stage 7 visualisation/web IDE is implemented in:
+
+- `src/stage7_visualisation.pl`
+
+Implemented Stage 7 components:
+
+- browser IDE (`browser_ide/4`)
+- matrix animation (`matrix_animation/3`)
+- proof graph display (`proof_graph_display/3`)
+- term rewrite visualiser (`term_rewrite_visualiser/3`)
+- CFG visualiser (`cfg_visualiser/2`)
+- proof tree explorer (`proof_tree_explorer/3`)
+- visualisation orchestration (`visualise_theorem/3`)
+
+### Stage 7 acceptance example
+
+In SWI-Prolog:
+
+```prolog
+?- [src/stage7_visualisation].
+?- visualise_theorem(sum_formula, student, Visualisation).
+Visualisation = visualisation(_, _, _, _, _, _).
+```
+
+### Run Stage 7 tests
+
+```bash
+swipl -q -g run_tests -t halt tests/test_stage7.pl
+```
