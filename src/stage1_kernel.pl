@@ -108,13 +108,9 @@ occurs(Name, var(Other), Subst) :-
     Name \== Other,
     memberchk(Other-Term, Subst),
     occurs(Name, Term, Subst).
-occurs(_, var(_), _) :-
-    fail.
 occurs(Name, fun(_, Args), Subst) :-
     member(Arg, Args),
     occurs(Name, Arg, Subst).
-occurs(_, const(_), _) :-
-    fail.
 
 apply_subst(var(Name), Subst, Result) :-
     (   memberchk(Name-Term, Subst)

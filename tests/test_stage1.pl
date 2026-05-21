@@ -19,7 +19,8 @@ test(rewrite_nested_term) :-
                  fun(s, [var(x)])).
 
 test(check_generated_proof) :-
-    check_proof(_).
+    check_proof(Proof),
+    Proof = proof(equation(fun(add, [const(0), var(x)]), var(x)), _).
 
 test(check_explicit_proof) :-
     check_proof(

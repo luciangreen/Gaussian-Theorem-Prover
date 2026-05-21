@@ -4,7 +4,7 @@
 
 This repository now includes a minimal Stage 1 theorem-proving kernel in:
 
-- `/tmp/workspace/luciangreen/Gaussian-Theorem-Prover/src/stage1_kernel.pl`
+- `src/stage1_kernel.pl`
 
 Implemented Stage 1 components:
 
