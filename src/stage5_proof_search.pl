@@ -63,7 +63,7 @@ execute_strategy(Theorem, strategy(Name, Weight), candidate(Name, Outcome, Score
 
 strategy_result(formula_then_verify, Theorem, proved,
                 details(formula(Formula), stage4_verification)) :-
-    Theorem == sum_formula,
+    discoverable_theorem(Theorem),
     discover_formula(sum, Formula),
     prove(Theorem, proved),
     !.
@@ -130,7 +130,7 @@ sum_formula_property(N) :-
     integer(N),
     N >= 0,
     recursive_sum_local(N, Sum),
-    triangular_formula_value(N, Formula),
+    compute_triangular_value(N, Formula),
     Sum =:= Formula.
 
 recursive_sum_local(0, 0).
@@ -142,5 +142,7 @@ recursive_sum_local(N, Sum) :-
 
 verification_bound(200).
 
-triangular_formula_value(N, Value) :-
+discoverable_theorem(sum_formula).
+
+compute_triangular_value(N, Value) :-
     Value is N*(N+1) // 2.
