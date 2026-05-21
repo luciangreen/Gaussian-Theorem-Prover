@@ -59,9 +59,15 @@ gaussian-theorem-prover/
 | 1 | Parser Agent | ✅ Complete |
 | 2 | Example Generation Agent | ✅ Complete |
 | 3 | Polynomial Discovery Agent | ✅ Complete |
-| 4 | Gaussian Elimination Agent | 🔲 Planned |
+| 4 | Gaussian Elimination Agent | ✅ Complete |
 | 5 | Induction Proof Agent | 🔲 Planned |
 | 6 | Child Explanation Agent | 🔲 Planned |
 | 7 | Web Visualisation Agent | 🔲 Planned |
+
+### Stage 4 tests
+
+```bash
+python -m pytest tests/test_gaussian.py -v
+```
 
 See [requirements.md](requirements.md) and [pr1.txt](pr1.txt) for full details.
