@@ -181,11 +181,11 @@ identifier(Atom) -->
 
 identifier_start(C) -->
     [C],
-    { code_type(C, alpha) ; C =:= 0'_ }.
+    { (code_type(C, alpha) ; C =:= 0'_) }.
 
 identifier_rest([C | Cs]) -->
     [C],
-    { code_type(C, alnum) ; C =:= 0'_ },
+    { (code_type(C, alnum) ; C =:= 0'_) },
     !,
     identifier_rest(Cs).
 identifier_rest([]) --> [].

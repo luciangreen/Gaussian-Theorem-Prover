@@ -18,7 +18,7 @@ test(rewrite_nested_term) :-
                  rule(fun(add, [const(0), var(a)]), var(a)),
                  fun(s, [var(x)])).
 
-test(check_generated_proof) :-
+test(check_proof_generates_example) :-
     check_proof(Proof),
     Proof = proof(
         equation(fun(add, [const(0), var(x)]), var(x)),
