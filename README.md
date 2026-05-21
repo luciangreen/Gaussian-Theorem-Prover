@@ -58,7 +58,7 @@ gaussian-theorem-prover/
 |-------|-----------|--------|
 | 1 | Parser Agent | ✅ Complete |
 | 2 | Example Generation Agent | ✅ Complete |
-| 3 | Polynomial Discovery Agent | 🔲 Planned |
+| 3 | Polynomial Discovery Agent | ✅ Complete |
 | 4 | Gaussian Elimination Agent | 🔲 Planned |
 | 5 | Induction Proof Agent | 🔲 Planned |
 | 6 | Child Explanation Agent | 🔲 Planned |

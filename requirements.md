@@ -8,7 +8,7 @@ See [pr1.txt](pr1.txt) for the full project specification.
 |-------|-----------|--------|
 | 1 | Parser Agent | ✅ Complete |
 | 2 | Example Generation Agent | ✅ Complete |
-| 3 | Polynomial Discovery Agent | 🔲 Planned |
+| 3 | Polynomial Discovery Agent | ✅ Complete |
 | 4 | Gaussian Elimination Agent | 🔲 Planned |
 | 5 | Induction Proof Agent | 🔲 Planned |
 | 6 | Child Explanation Agent | 🔲 Planned |
@@ -80,4 +80,35 @@ Prolog-like program source for a single predicate.
 
 ```bash
 python -m pytest tests/test_examples.py -v
+```
+
+## Stage 3 — Polynomial Discovery Agent
+
+### Input
+
+Examples as input/output pairs from Stage 2.
+
+### Output (candidate polynomial)
+
+```json
+{
+  "predicate": "sum",
+  "degree": 2,
+  "coefficients_readable": ["1/2", "1/2", "0"],
+  "formula": "1/2*n^2 + 1/2*n",
+  "status": "found"
+}
+```
+
+### Requirements implemented
+
+- Tries polynomial degrees 0, 1, 2, 3, and 4.
+- Builds coefficient matrices from examples.
+- Uses exact rational arithmetic (`fractions.Fraction`).
+- Rejects candidates that fail available test examples.
+
+### Running polynomial-discovery tests
+
+```bash
+python -m pytest tests/test_polynomial.py -v
 ```
