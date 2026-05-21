@@ -60,6 +60,7 @@ test(universal_prove_acceptance_with_evidence) :-
     member(lemma(discovered_formula(sum, n*(n+1)/2)), Lemmas).
 
 test(universal_prove_acceptance_unary) :-
-    universal_prove(sum_formula, proved).
+    universal_prove(sum_formula, Result),
+    Result == proved.
 
 :- end_tests(stage5_proof_search).
