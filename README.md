@@ -220,3 +220,33 @@ Visualisation = visualisation(_, _, _, _, _, _).
 ```bash
 swipl -q -g run_tests -t halt tests/test_stage7.pl
 ```
+
+## Stage 8 implementation
+
+Stage 8 external backends are implemented in:
+
+- `src/stage8_external_backends.pl`
+
+Implemented Stage 8 components:
+
+- Lean exporter (`lean_exporter/3`)
+- Coq exporter (`coq_exporter/3`)
+- SMTLIB exporter (`smtlib_exporter/3`)
+- TPTP exporter (`tptp_exporter/3`)
+- export orchestration (`export_proof/3`, `export_proof_text/3`)
+
+### Stage 8 acceptance example
+
+In SWI-Prolog:
+
+```prolog
+?- [src/stage8_external_backends].
+?- export_proof(sum_formula, lean, File).
+File = 'exports/sum_formula.lean'.
+```
+
+### Run Stage 8 tests
+
+```bash
+swipl -q -g run_tests -t halt tests/test_stage8.pl
+```
