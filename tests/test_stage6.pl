@@ -2,7 +2,7 @@
 
 :- use_module('../src/stage6_explanation').
 
-test(child_explanation_for_sum_formula_mentions_quadratic_rule) :-
+test(child_explanation_mentions_quadratic_rule) :-
     ExampleEvidence = evidence(
         strategies([]),
         lemmas([lemma(discovered_formula(sum, n*(n+1)/2))]),
@@ -16,7 +16,7 @@ test(child_explanation_for_sum_formula_mentions_quadratic_rule) :-
     member(Line, Lines),
     sub_atom(Line, _, _, _, 'hidden quadratic rule').
 
-test(student_explanation_for_sum_formula_mentions_invariant) :-
+test(student_explanation_mentions_invariant) :-
     ExampleEvidence = evidence(
         strategies([]),
         lemmas([lemma(discovered_formula(sum, n*(n+1)/2))]),

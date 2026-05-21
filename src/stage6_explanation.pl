@@ -110,7 +110,7 @@ explanation_story(Result, Theorem, Evidence, Lines, Trace, story(lines(Lines), t
     visual_rewrite_explanation(Theorem, Evidence, Frames),
     failure_explanation(Theorem, Result, FailureLine).
 
-discovered_formula_text(evidence(strategies(_KnownStrategies), lemmas(Lemmas), _Ranked, _Fallback, _Best), FormulaText) :-
+discovered_formula_text(evidence(strategies(_Strategies), lemmas(Lemmas), _Ranked, _Fallback, _Best), FormulaText) :-
     member(lemma(discovered_formula(_Predicate, Formula)), Lemmas),
     term_string(Formula, FormulaText),
     !.
