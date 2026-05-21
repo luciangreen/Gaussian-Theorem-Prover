@@ -15,7 +15,10 @@ def _to_fraction(value: Any) -> Fraction:
         return Fraction(str(value))
     if isinstance(value, str):
         return Fraction(value)
-    raise TypeError(f"Unsupported numeric value for fraction conversion: {value!r}")
+    raise TypeError(
+        f"Unsupported type for fraction conversion: {type(value).__name__}. "
+        "Expected int, float, str, or Fraction."
+    )
 
 
 def _format_fraction(value: Fraction) -> str:
@@ -34,7 +37,10 @@ class PolynomialDiscoveryAgent:
         """Build an augmented matrix for fitting a polynomial of degree `degree`."""
         needed = degree + 1
         if len(examples) < needed:
-            raise ValueError(f"Need at least {needed} examples to fit degree {degree}")
+            raise ValueError(
+                f"Need at least {needed} examples to fit degree {degree} polynomial, "
+                f"but only {len(examples)} provided"
+            )
 
         matrix: list[list[Fraction]] = []
         for pair in examples[:needed]:
@@ -53,7 +59,7 @@ class PolynomialDiscoveryAgent:
         predicate = example_data.get("predicate")
         examples = example_data.get("examples", [])
         if not examples:
-            raise ValueError("No examples provided")
+            raise ValueError("No examples provided in example_data")
 
         normalized = [
             {"input": _to_fraction(item["input"]), "output": _to_fraction(item["output"])}
@@ -98,11 +104,9 @@ class PolynomialDiscoveryAgent:
         return True
 
     def _evaluate_polynomial(self, coefficients: list[Fraction], x: Fraction) -> Fraction:
-        degree = len(coefficients) - 1
         value = Fraction(0)
-        for index, coefficient in enumerate(coefficients):
-            power = degree - index
-            value += coefficient * (x ** power)
+        for coefficient in coefficients:
+            value = (value * x) + coefficient
         return value
 
     def _solve_augmented_matrix(self, matrix: list[list[Fraction]]) -> list[Fraction] | None:
