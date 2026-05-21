@@ -14,7 +14,10 @@ def _to_fraction(value: Any) -> Fraction:
     if isinstance(value, float):
         return Fraction(str(value))
     if isinstance(value, str):
-        return Fraction(value)
+        try:
+            return Fraction(value)
+        except ValueError as exc:
+            raise ValueError(f"Invalid fraction string value: {value!r}") from exc
     raise TypeError(
         f"Unsupported type for fraction conversion: {type(value).__name__}. "
         "Expected int, float, str, or Fraction."
