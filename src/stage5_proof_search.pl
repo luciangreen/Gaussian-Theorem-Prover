@@ -86,7 +86,7 @@ strategy_result(counterexample_guard, Theorem, Outcome,
     !.
 strategy_result(counterexample_guard, _Theorem, failed, details(not_applicable)).
 
-theorem_property(sum_formula, stage5_proof_search:sum_formula_property_local).
+theorem_property(sum_formula, stage5_proof_search:sum_formula_property).
 
 score_for_outcome(proved, Weight, Score) :-
     Score is Weight + 100.
@@ -126,7 +126,7 @@ resolve_final_result(_Best,
                      fallback(_Strategy, _Tried, Outcome, _Details),
                      Outcome).
 
-sum_formula_property_local(N) :-
+sum_formula_property(N) :-
     integer(N),
     N >= 0,
     recursive_sum_local(N, Sum),

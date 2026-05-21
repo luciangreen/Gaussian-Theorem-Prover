@@ -47,6 +47,15 @@ test(fallback_strategy_selects_first_successful_candidate) :-
     ),
     Fallback == fallback(backup, [backup, primary], proved_with_guard, none).
 
+test(fallback_strategy_reports_no_successful_candidate) :-
+    fallback_strategy(
+        sum_formula,
+        [candidate(primary, failed, 0, none), candidate(backup, failed, -1, none)],
+        [],
+        Fallback
+    ),
+    Fallback == fallback(no_strategy, [backup, primary], failed, none).
+
 test(universal_prove_acceptance_with_evidence) :-
     universal_prove(sum_formula, Result, Evidence),
     Result == proved,
