@@ -24,10 +24,11 @@ generate_call_graph(Clauses, Edges) :-
     sort(RawEdges, Edges).
 
 termination_heuristic(Clauses, Pred, terminates(decreasing_argument(1, Delta))) :-
-    predicate_clause(Clauses, Pred, Clause),
-    recursive_step_clause(Pred, Clause, Delta),
-    Delta > 0,
-    !.
+    once((
+        predicate_clause(Clauses, Pred, Clause),
+        recursive_step_clause(Pred, Clause, Delta),
+        Delta > 0
+    )).
 termination_heuristic(Clauses, Pred, unknown) :-
     predicate_exists(Clauses, Pred).
 
@@ -105,6 +106,7 @@ body_call_term(call(Term), Term).
 body_call_term(Term, Term).
 
 aligned_index(N, BaseN, Delta) :-
+    Delta > 0,
     Diff is N - BaseN,
     0 is Diff mod Delta.
 
