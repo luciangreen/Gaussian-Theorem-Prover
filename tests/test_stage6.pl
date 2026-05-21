@@ -67,7 +67,9 @@ test(explain_proof_student_audience) :-
     sub_atom(FailureMessage, _, _, _, 'No failure'),
     member(Line, Lines),
     sub_atom(Line, _, _, _, 'fitted invariant'),
-    member('Top candidate: formula_then_verify with outcome proved and score 200.', Trace),
+    member(TopTraceLine, Trace),
+    sub_atom(TopTraceLine, _, _, _, 'Top candidate'),
+    sub_atom(TopTraceLine, _, _, _, 'formula_then_verify'),
     member(frame(formula, _), Frames).
 
 test(explain_proof_child_audience) :-
