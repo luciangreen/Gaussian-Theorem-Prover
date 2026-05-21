@@ -66,7 +66,7 @@ pred_id(fun(Name, Args), Name/Arity) :-
 base_clause(clause(fun(_Name, [const(BaseN), const(BaseValue)]), Body), BaseN, BaseValue) :-
     integer(BaseN),
     number(BaseValue),
-    \+ has_recursive_call(_/_, Body).
+    \+ has_any_call(Body).
 
 recursive_step_clause(Pred, clause(fun(Name, [var(NVar), var(SVar)]), Body), Delta) :-
     Pred = Name/2,
@@ -78,6 +78,11 @@ has_recursive_call(Pred, Body) :-
     member(Item, Body),
     body_call_term(Item, Call),
     pred_id(Call, Pred),
+    !.
+
+has_any_call(Body) :-
+    member(Item, Body),
+    body_call_term(Item, _),
     !.
 
 recursive_call(Body, Name, NVar, RecOutVar, Delta) :-

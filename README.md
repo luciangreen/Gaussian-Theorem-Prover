@@ -56,7 +56,7 @@ P = [clause(fun(sum, [const(0), const(0)]), []), clause(fun(sum, [var('N'), var(
 R = recurrence(sum/2, base(0, 0), step(n, rec(n-1)+n)).
 ```
 
-### Run Stage 1 + Stage 2 tests
+### Run Stage 1 and Stage 2 tests
 
 ```bash
 swipl -q -g run_tests -t halt tests/test_stage1.pl
