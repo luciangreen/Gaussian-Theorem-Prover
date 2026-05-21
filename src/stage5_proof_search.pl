@@ -61,10 +61,11 @@ execute_strategy(Theorem, strategy(Name, Weight), candidate(Name, Outcome, Score
     strategy_result(Name, Theorem, Outcome, Details),
     score_for_outcome(Outcome, Weight, Score).
 
-strategy_result(formula_then_verify, sum_formula, proved,
+strategy_result(formula_then_verify, Theorem, proved,
                 details(formula(Formula), stage4_verification)) :-
+    Theorem == sum_formula,
     discover_formula(sum, Formula),
-    prove(sum_formula, proved),
+    prove(Theorem, proved),
     !.
 strategy_result(formula_then_verify, _Theorem, failed, details(not_applicable)).
 
@@ -85,7 +86,7 @@ strategy_result(counterexample_guard, Theorem, Outcome,
     !.
 strategy_result(counterexample_guard, _Theorem, failed, details(not_applicable)).
 
-theorem_property(sum_formula, stage5_proof_search:sum_formula_property).
+theorem_property(sum_formula, sum_formula_property).
 
 score_for_outcome(proved, Weight, Score) :-
     Score is Weight + 100.
