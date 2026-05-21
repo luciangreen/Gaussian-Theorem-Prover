@@ -157,3 +157,34 @@ Result = proved.
 ```bash
 swipl -q -g run_tests -t halt tests/test_stage5.pl
 ```
+
+## Stage 6 implementation
+
+Stage 6 explanation layer is implemented in:
+
+- `src/stage6_explanation.pl`
+
+Implemented Stage 6 components:
+
+- child explanations (`child_explanation/3`)
+- student explanations (`student_explanation/3`)
+- proof trace narration (`narrate_proof_trace/2`)
+- visual rewrite explanations (`visual_rewrite_explanation/3`)
+- failure explanations (`failure_explanation/3`)
+- explanation orchestration (`explain_proof/3`)
+
+### Stage 6 acceptance example
+
+In SWI-Prolog:
+
+```prolog
+?- [src/stage6_explanation].
+?- explain_proof(sum_formula, child, Explanation).
+Explanation = explanation(sum_formula, child, proved, _).
+```
+
+### Run Stage 6 tests
+
+```bash
+swipl -q -g run_tests -t halt tests/test_stage6.pl
+```
