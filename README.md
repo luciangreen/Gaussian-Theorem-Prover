@@ -126,3 +126,34 @@ Result = proved.
 ```bash
 swipl -q -g run_tests -t halt tests/test_stage4.pl
 ```
+
+## Stage 5 implementation
+
+Stage 5 universal proof search is implemented in:
+
+- `src/stage5_proof_search.pl`
+
+Implemented Stage 5 components:
+
+- strategy selection (`select_strategy/3`)
+- heuristic proof search (`heuristic_proof_search/3`)
+- lemma generation (`generate_lemmas/3`)
+- proof ranking (`rank_proofs/2`)
+- fallback strategies (`fallback_strategy/4`)
+- universal orchestration (`universal_prove/2`, `universal_prove/3`)
+
+### Stage 5 acceptance example
+
+In SWI-Prolog:
+
+```prolog
+?- [src/stage5_proof_search].
+?- universal_prove(sum_formula, Result).
+Result = proved.
+```
+
+### Run Stage 5 tests
+
+```bash
+swipl -q -g run_tests -t halt tests/test_stage5.pl
+```
