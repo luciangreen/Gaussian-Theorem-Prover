@@ -1,0 +1,249 @@
+Stage 1 — Core Logic Infrastructure
+
+Goal:
+
+Create the minimal theorem-proving kernel.
+
+Implements:
+
+parser
+term representation
+unification
+basic rewriting
+proof objects
+proof checker
+
+Acceptance:
+
+?- check_proof(Proof).
+true.
+
+⸻
+
+Stage 2 — Recursive Program Analysis
+
+Goal:
+
+Understand recursive programs structurally.
+
+Implements:
+
+recurrence extraction
+call graph generation
+termination heuristics
+example generation
+
+Example:
+
+sum(N,S)
+→
+sum(n)=sum(n-1)+n
+
+⸻
+
+Stage 3 — Gaussian Discovery Engine
+
+Goal:
+
+Discover hidden algebraic structure.
+
+Implements:
+
+matrix builder
+finite differences
+polynomial fitting
+Gaussian elimination
+invariant extraction
+
+Core object:
+
+Ax=b
+
+Acceptance:
+
+?- discover_formula(sum, F).
+F = n*(n+1)/2.
+
+⸻
+
+Stage 4 — Formal Verification Engine
+
+Goal:
+
+Prove discovered conjectures rigorously.
+
+Implements:
+
+mathematical induction
+structural induction
+resolution
+constraint solving
+counterexample search
+
+Acceptance:
+
+?- prove(sum_formula).
+proved.
+
+⸻
+
+Stage 5 — Universal Proof Search
+
+Goal:
+
+Combine multiple proof systems intelligently.
+
+Implements:
+
+strategy selection
+heuristic proof search
+lemma generation
+proof ranking
+fallback strategies
+
+This stage begins resembling:
+
+* Lean
+* Coq
+* ACL2
+
+but with stronger automated conjecture discovery.
+
+⸻
+
+Stage 6 — Explanation Layer
+
+Goal:
+
+Make proofs understandable.
+
+Implements:
+
+child explanations
+student explanations
+proof trace narration
+visual rewrite explanations
+failure explanations
+
+Example:
+
+The recursion keeps adding the next number.
+That creates a triangular pattern.
+Gaussian elimination found the hidden quadratic rule.
+Induction proved the rule always works.
+
+⸻
+
+Stage 7 — Visualisation/Web IDE
+
+Goal:
+
+Create an interactive theorem laboratory.
+
+Implements:
+
+browser IDE
+matrix animation
+proof graph display
+term rewrite visualiser
+CFG visualiser
+proof tree explorer
+
+Potential stack:
+
+SWI-Prolog
+Pengines
+Tau Prolog
+JavaScript
+SVG/Canvas
+
+⸻
+
+Stage 8 — External Backends
+
+Goal:
+
+Export proofs into industrial proof assistants.
+
+Implements:
+
+Lean exporter
+Coq exporter
+SMTLIB exporter
+TPTP exporter
+
+Acceptance:
+
+?- export_proof(sum_formula, lean, File).
+
+⸻
+
+Stage 9 — Advanced Discovery
+
+Goal:
+
+Generalise beyond polynomial discovery.
+
+Implements:
+
+graph invariants
+CFG induction
+symbolic compression
+recursive decomposition
+Spec-to-Algorithm
+semantic pattern mining
+
+This is where your:
+
+* Spec-to-Algorithm
+* NeuroStarlog
+* recursive compression
+* CFG discovery
+* graph transformations
+
+become central.
+
+⸻
+
+Why multistage PRs are essential
+
+Because each layer depends on verified lower layers.
+
+For example:
+
+Bad parser
+→ bad recurrence extraction
+→ bad matrix
+→ false formula
+→ invalid proof
+
+So each PR should freeze correctness before the next abstraction layer.
+
+⸻
+
+Ideal PR sequence
+
+PR	Name
+PR1	Parser + AST
+PR2	Example generator
+PR3	Recurrence extractor
+PR4	Gaussian elimination
+PR5	Polynomial discovery
+PR6	Induction prover
+PR7	Proof checker
+PR8	Explanation generator
+PR9	Web visualiser
+PR10	Universal proof search
+PR11	Lean/Coq export
+PR12	Graph/CFG reasoning
+PR13	Spec-to-Algorithm integration
+
+⸻
+
+Most important architectural rule
+
+discover_conjecture \= prove_theorem.
+
+Discovery and proof must remain separate stages.
+
+That separation is what keeps the system mathematically honest.
