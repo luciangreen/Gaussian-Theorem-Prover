@@ -34,4 +34,8 @@ test(export_proof_rejects_unknown_backend,
      [error(domain_error(export_backend, xml), _)]) :-
     export_proof_text(sum_formula, xml, _).
 
+test(export_proof_rejects_unknown_theorem_formula,
+     [error(existence_error(export_formula, missing_formula_theorem), _)]) :-
+    export_proof_text(missing_formula_theorem, lean, _).
+
 :- end_tests(stage8_external_backends).
