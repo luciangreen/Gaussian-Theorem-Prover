@@ -103,7 +103,7 @@ class GaussianEliminationAgent:
                     operation="scale",
                     row=col,
                     factor=scale_factor,
-                    description=f"Scale row {col + 1} by { _format_fraction(scale_factor) } so the pivot becomes 1.",
+                    description=f"Scale row {col + 1} by {_format_fraction(scale_factor)} so the pivot becomes 1.",
                 )
 
             for row in range(size):
@@ -122,7 +122,7 @@ class GaussianEliminationAgent:
                     target_row=row,
                     factor=factor,
                     description=(
-                        f"Subtract { _format_fraction(factor) } × row {col + 1} "
+                        f"Subtract {_format_fraction(factor)} × row {col + 1} "
                         f"from row {row + 1} to clear column {col + 1}."
                     ),
                 )
