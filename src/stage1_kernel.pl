@@ -149,6 +149,9 @@ equation(Left, Right) -->
 term(Term) --> variable(Term).
 term(Term) --> function_or_const(Term).
 
+function_or_const(const(Number)) -->
+    integer(Number).
+
 variable(var(Name)) -->
     identifier(Name),
     { atom_chars(Name, [First | _]), char_type(First, upper) }.
