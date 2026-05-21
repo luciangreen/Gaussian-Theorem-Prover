@@ -93,3 +93,36 @@ F = n*(n+1)/2.
 ```bash
 swipl -q -g run_tests -t halt tests/test_stage3.pl
 ```
+
+## Stage 4 implementation
+
+Stage 4 formal verification is implemented in:
+
+- `src/stage4_verification.pl`
+
+Implemented Stage 4 components:
+
+- mathematical induction (`mathematical_induction/3`)
+- structural induction (`structural_induction/3`)
+- resolution (`resolution/2`)
+- constraint solving (`solve_constraints/2`)
+- counterexample search (`counterexample_search/3`)
+- theorem proving (`prove/1`, `prove/2`)
+
+### Stage 4 acceptance example
+
+In SWI-Prolog:
+
+```prolog
+?- [src/stage4_verification].
+?- prove(sum_formula).
+true.
+?- prove(sum_formula, Result).
+Result = proved.
+```
+
+### Run Stage 4 tests
+
+```bash
+swipl -q -g run_tests -t halt tests/test_stage4.pl
+```
