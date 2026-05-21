@@ -50,7 +50,7 @@ def _split_clauses(source: str) -> list[str]:
     Split a Prolog program into individual clauses (terminated by '.').
     Handles multi-line clauses and skips blank/comment-only clauses.
     """
-    # Normalise whitespace but keep structure
+    # Keep original whitespace structure; only strip comments.
     source = _strip_comments(source)
     # Split on '.' that end a clause (not inside atoms/strings)
     raw = re.split(r"\.\s*(?=\n|$)", source)

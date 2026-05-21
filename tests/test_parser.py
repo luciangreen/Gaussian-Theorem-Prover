@@ -28,7 +28,7 @@ EXAMPLES_DIR = os.path.join(os.path.dirname(__file__), "..", "examples")
 
 
 def _load(filename: str) -> str:
-    with open(os.path.join(EXAMPLES_DIR, filename)) as fh:
+    with open(os.path.join(EXAMPLES_DIR, filename), encoding="utf-8") as fh:
         return fh.read()
 
 

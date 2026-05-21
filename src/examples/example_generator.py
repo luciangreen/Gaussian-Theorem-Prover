@@ -206,7 +206,12 @@ class ExampleGenerator:
                 in_arg = args[0]
                 out_arg = args[1]
 
-                in_value = _eval_expr(in_arg, env) if not _is_variable(in_arg) else env[in_arg]
+                if _is_variable(in_arg):
+                    if in_arg not in env:
+                        raise ValueError(f"Unbound input variable in recursive call: {in_arg}")
+                    in_value = env[in_arg]
+                else:
+                    in_value = _eval_expr(in_arg, env)
                 rec_value = self._evaluate(pred_name, int(in_value), facts, rules, depth + 1, call_stack)
                 env[out_arg] = rec_value
                 continue
