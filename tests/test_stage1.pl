@@ -20,7 +20,11 @@ test(rewrite_nested_term) :-
 
 test(check_generated_proof) :-
     check_proof(Proof),
-    Proof = proof(equation(fun(add, [const(0), var(x)]), var(x)), _).
+    Proof = proof(
+        equation(fun(add, [const(0), var(x)]), var(x)),
+        [rewrite_left(rule(fun(add, [const(0), var(a)]), var(a)))]
+    ),
+    check_proof(Proof).
 
 test(check_explicit_proof) :-
     check_proof(
