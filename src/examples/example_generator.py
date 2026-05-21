@@ -145,13 +145,10 @@ class ExampleGenerator:
                 call_stack.add(state)
                 self._run_goals(rule["body"], env, predicate, facts, rules, depth, call_stack)
             except NonTerminationError:
-                call_stack.discard(state)
                 raise
             except RecursionDepthError:
-                call_stack.discard(state)
                 raise
             except ValueError:
-                call_stack.discard(state)
                 continue
             finally:
                 call_stack.discard(state)
