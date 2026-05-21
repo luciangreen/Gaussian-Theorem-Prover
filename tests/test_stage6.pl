@@ -56,7 +56,7 @@ test(failure_explanation_handles_failed_outcome) :-
     failure_explanation(sum_formula, failed, Message),
     sub_atom(Message, _, _, _, 'could not prove sum_formula').
 
-test(explain_proof_acceptance_student) :-
+test(explain_proof_student_audience) :-
     explain_proof(sum_formula, student, Explanation),
     Explanation = explanation(
         sum_formula,
@@ -69,7 +69,7 @@ test(explain_proof_acceptance_student) :-
     member('Top candidate: formula_then_verify with outcome proved and score 200.', Trace),
     member(frame(formula, _), Frames).
 
-test(explain_proof_acceptance_child) :-
+test(explain_proof_child_audience) :-
     explain_proof(sum_formula, child, explanation(sum_formula, child, proved, story(lines(Lines), trace(_), visual(_), failure(_)))),
     member('That creates a triangular pattern.', Lines).
 

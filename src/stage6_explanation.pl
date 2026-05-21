@@ -110,16 +110,17 @@ explanation_story(Result, Theorem, Evidence, Lines, Trace, story(lines(Lines), t
     visual_rewrite_explanation(Theorem, Evidence, Frames),
     failure_explanation(Theorem, Result, FailureLine).
 
-discovered_formula_text(evidence(_Strategies, lemmas(Lemmas), _Ranked, _Fallback, _Best), FormulaText) :-
+discovered_formula_text(evidence(StrategiesTerm, lemmas(Lemmas), _Ranked, _Fallback, _Best), FormulaText) :-
+    nonvar(StrategiesTerm),
     member(lemma(discovered_formula(_Predicate, Formula)), Lemmas),
     term_string(Formula, FormulaText),
     !.
 discovered_formula_text(_Evidence, 'an inferred invariant').
 
 strategy_names_text(Strategies, Text) :-
-    findall(NameAtom,
+    findall(NameString,
             ( member(strategy(Name, _Weight), Strategies),
-              term_string(Name, NameAtom)
+              term_string(Name, NameString)
             ),
             Names),
     atomic_list_concat(Names, ', ', Text).
