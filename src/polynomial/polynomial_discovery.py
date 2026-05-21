@@ -66,9 +66,13 @@ class PolynomialDiscoveryAgent:
             for item in examples
         ]
 
+        attempted_degrees: list[int] = []
+        skipped_degrees: list[int] = []
         for degree in range(0, self.max_degree + 1):
             if len(normalized) < degree + 1:
+                skipped_degrees.extend(range(degree, self.max_degree + 1))
                 break
+            attempted_degrees.append(degree)
             matrix = self.build_coefficient_matrix(normalized, degree)
             coefficients = self._solve_augmented_matrix(matrix)
             if coefficients is None:
@@ -82,6 +86,8 @@ class PolynomialDiscoveryAgent:
                     "formula": self._format_formula(coefficients),
                     "matrix": matrix,
                     "status": "found",
+                    "attempted_degrees": attempted_degrees,
+                    "skipped_degrees": skipped_degrees,
                 }
 
         return {
@@ -93,6 +99,8 @@ class PolynomialDiscoveryAgent:
             "matrix": [],
             "status": "rejected",
             "reason": f"No polynomial formula found up to degree {self.max_degree}",
+            "attempted_degrees": attempted_degrees,
+            "skipped_degrees": skipped_degrees,
         }
 
     def _candidate_matches_all_points(
@@ -139,6 +147,8 @@ class PolynomialDiscoveryAgent:
 
         coefficients = [Fraction(0) for _ in range(size)]
         for row in range(size - 1, -1, -1):
+            if work[row][row] == 0:
+                return None
             rhs = work[row][size]
             for col in range(row + 1, size):
                 rhs -= work[row][col] * coefficients[col]

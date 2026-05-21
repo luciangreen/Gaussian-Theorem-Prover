@@ -61,6 +61,7 @@ class TestPolynomialDiscovery(unittest.TestCase):
         self.assertEqual(result["status"], "rejected")
         self.assertIsNone(result["degree"])
         self.assertEqual(result["coefficients"], [])
+        self.assertIn("No polynomial formula found", result["reason"])
 
 
 if __name__ == "__main__":
