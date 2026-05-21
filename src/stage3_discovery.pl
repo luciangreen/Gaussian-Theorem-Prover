@@ -23,7 +23,7 @@ discover_formula(PredicateName, Formula) :-
 
 build_matrix(Points, Degree, Matrix, Vector) :-
     RequiredRows is Degree + 1,
-    prefix_length(Points, SelectedPoints, RequiredRows),
+    take_prefix(Points, RequiredRows, SelectedPoints),
     maplist(point_matrix_row(Degree), SelectedPoints, Matrix),
     maplist(point_value, SelectedPoints, Vector).
 
@@ -75,6 +75,7 @@ pairwise_differences([A, B | Rest], [Diff | DiffsRest]) :-
     pairwise_differences([B | Rest], DiffsRest).
 pairwise_differences([_], []).
 
+all_equal([]).
 all_equal([_]).
 all_equal([A, B | Rest]) :-
     A =:= B,
@@ -103,16 +104,22 @@ forward_elimination(K, N, RowsIn, RowsOut) :-
     Scale is 1 / Pivot,
     scale_row(PivotRow, Scale, NormalizedPivotRow),
     set_nth0(PivotedRows, K, NormalizedPivotRow, RowsWithPivot),
-    eliminate_below(K, NormalizedPivotRow, RowsWithPivot, EliminatedRows),
+    eliminate_below(0, K, NormalizedPivotRow, RowsWithPivot, EliminatedRows),
     NextK is K + 1,
     forward_elimination(NextK, N, EliminatedRows, RowsOut).
 
 pivot_row_index(Rows, K, PivotIndex) :-
-    nth0(PivotIndex, Rows, Row),
-    PivotIndex >= K,
-    nth0(K, Row, Pivot),
-    Pivot =\= 0,
-    !.
+    findall(AbsPivot-Index,
+            ( nth0(Index, Rows, Row),
+              Index >= K,
+              nth0(K, Row, Pivot),
+              Pivot =\= 0,
+              AbsPivot is abs(Pivot)
+            ),
+            Candidates),
+    Candidates \= [],
+    keysort(Candidates, Sorted),
+    reverse(Sorted, [_BestAbs-PivotIndex | _]).
 
 swap_rows(Rows, I, I, Rows) :- !.
 swap_rows(Rows, I, J, Swapped) :-
@@ -131,14 +138,18 @@ scale_row([Value | Rest], Scale, [Scaled | ScaledRest]) :-
     Scaled is Value * Scale,
     scale_row(Rest, Scale, ScaledRest).
 
-eliminate_below(_K, _PivotRow, [], []).
-eliminate_below(K, PivotRow, [Row | Rest], [ResultRow | ResultRest]) :-
-    nth0(K, Row, Factor),
-    (   Factor =:= 0
+eliminate_below(_RowIndex, _K, _PivotRow, [], []).
+eliminate_below(RowIndex, K, PivotRow, [Row | Rest], [ResultRow | ResultRest]) :-
+    (   RowIndex =< K
     ->  ResultRow = Row
-    ;   row_subtract_multiple(Row, PivotRow, Factor, ResultRow)
+    ;   nth0(K, Row, Factor),
+        (   Factor =:= 0
+        ->  ResultRow = Row
+        ;   row_subtract_multiple(Row, PivotRow, Factor, ResultRow)
+        )
     ),
-    eliminate_below(K, PivotRow, Rest, ResultRest).
+    NextRowIndex is RowIndex + 1,
+    eliminate_below(NextRowIndex, K, PivotRow, Rest, ResultRest).
 
 row_subtract_multiple([], [], _Factor, []).
 row_subtract_multiple([A | As], [B | Bs], Factor, [C | Cs]) :-
@@ -178,15 +189,14 @@ solution_from_pairs(Current, Last, Pairs, [Value | Rest]) :-
     solution_from_pairs(Next, Last, Pairs, Rest).
 
 polynomial_expression(Coefficients, Variable, Expression) :-
-    polynomial_terms(Coefficients, Variable, Terms),
+    polynomial_terms(Coefficients, Variable, 0, Terms),
     sum_terms(Terms, Expression).
 
-polynomial_terms([], _Variable, []).
-polynomial_terms([Coefficient | Rest], Variable, [Term | TermsRest]) :-
-    length(Rest, Remaining),
-    Exponent is Remaining,
+polynomial_terms([], _Variable, _Exponent, []).
+polynomial_terms([Coefficient | Rest], Variable, Exponent, [Term | TermsRest]) :-
     polynomial_term(Coefficient, Variable, Exponent, Term),
-    polynomial_terms(Rest, Variable, TermsRest).
+    NextExponent is Exponent + 1,
+    polynomial_terms(Rest, Variable, NextExponent, TermsRest).
 
 polynomial_term(Coefficient, _Variable, 0, Coefficient).
 polynomial_term(Coefficient, Variable, 1, Coefficient*Variable).
@@ -203,3 +213,7 @@ integer_power(Base, Exponent, Result) :-
     NextExponent is Exponent - 1,
     integer_power(Base, NextExponent, Partial),
     Result is Base * Partial.
+
+take_prefix(List, Count, Prefix) :-
+    length(Prefix, Count),
+    append(Prefix, _, List).

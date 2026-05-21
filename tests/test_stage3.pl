@@ -17,7 +17,10 @@ test(gaussian_elimination_solves_quadratic_system) :-
     Matrix = [[1, 0, 0], [1, 1, 1], [1, 2, 4]],
     Vector = [0, 1, 3],
     gaussian_elimination(Matrix, Vector, Coefficients),
-    Coefficients == [0, 1 rdiv 2, 1 rdiv 2].
+    Coefficients = [A0, A1, A2],
+    A0 =:= 0,
+    A1 =:= 1 rdiv 2,
+    A2 =:= 1 rdiv 2.
 
 test(extract_invariant_sum_formula) :-
     extract_invariant(sum, [0, 1 rdiv 2, 1 rdiv 2], Formula),
@@ -33,6 +36,9 @@ test(polynomial_fit_from_stage2_examples) :-
     findall(N-V, member(example(fun(sum, [const(N), const(V)])), Examples), Points),
     build_matrix(Points, 2, Matrix, Vector),
     polynomial_fit(Matrix, Vector, Coefficients),
-    Coefficients == [0, 1 rdiv 2, 1 rdiv 2].
+    Coefficients = [A0, A1, A2],
+    A0 =:= 0,
+    A1 =:= 1 rdiv 2,
+    A2 =:= 1 rdiv 2.
 
 :- end_tests(stage3_discovery).
