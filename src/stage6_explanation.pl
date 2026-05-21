@@ -15,39 +15,39 @@ explain_proof(Theorem, Audience, explanation(Theorem, Audience, Result, Story)) 
     narrate_proof_trace(Evidence, Trace),
     explanation_story(Result, Theorem, Evidence, Lines, Trace, Story).
 
-child_explanation(sum_formula, Evidence,
-                  [ 'The recursion keeps adding the next number.',
-                    'That creates a triangular pattern.',
-                    FormulaLine,
-                    'Induction proved the rule always works.'
-                  ]) :-
+child_explanation(sum_formula, Evidence, Lines) :-
     discovered_formula_text(Evidence, FormulaText),
     format(atom(FormulaLine), 'Gaussian elimination found the hidden quadratic rule: ~w.', [FormulaText]),
+    Lines = [ 'The recursion keeps adding the next number.',
+              'That creates a triangular pattern.',
+              FormulaLine,
+              'Induction proved the rule always works.'
+            ],
     !.
-child_explanation(Theorem, _Evidence,
-                  [ 'The proof keeps reducing the goal into smaller steps.',
-                    'Each step keeps the same meaning.',
-                    'The solver found a pattern that matches every checked case.',
-                    Summary
-                  ]) :-
-    format(atom(Summary), 'So ~w works for all tested inputs.', [Theorem]).
+child_explanation(Theorem, _Evidence, Lines) :-
+    format(atom(Summary), 'So ~w works for all tested inputs.', [Theorem]),
+    Lines = [ 'The proof keeps reducing the goal into smaller steps.',
+              'Each step keeps the same meaning.',
+              'The solver found a pattern that matches every checked case.',
+              Summary
+            ].
 
-student_explanation(sum_formula, Evidence,
-                    [ 'The recurrence sum(n)=sum(n-1)+n induces a second-order finite-difference signature.',
-                      FormulaLine,
-                      'The universal proof search ranked formula_then_verify first and then confirmed the theorem with Stage 4 induction and resolution.',
-                      'Counterexample search over the configured bound found no violating input.'
-                    ]) :-
+student_explanation(sum_formula, Evidence, Lines) :-
     discovered_formula_text(Evidence, FormulaText),
     format(atom(FormulaLine), 'The fitted invariant is ~w.', [FormulaText]),
+    Lines = [ 'The recurrence sum(n)=sum(n-1)+n induces a second-order finite-difference signature.',
+              FormulaLine,
+              'The universal proof search ranked formula_then_verify first and then confirmed the theorem with Stage 4 induction and resolution.',
+              'Counterexample search over the configured bound found no violating input.'
+            ],
     !.
-student_explanation(Theorem, _Evidence,
-                    [ TargetLine,
-                      'The search engine evaluated multiple strategies and ranked them by confidence.',
-                      'The top-ranked candidate was checked with the formal verification stage.',
-                      'No counterexample was found in the configured range.'
-                    ]) :-
-    format(atom(TargetLine), 'Target theorem: ~w.', [Theorem]).
+student_explanation(Theorem, _Evidence, Lines) :-
+    format(atom(TargetLine), 'Target theorem: ~w.', [Theorem]),
+    Lines = [ TargetLine,
+              'The search engine evaluated multiple strategies and ranked them by confidence.',
+              'The top-ranked candidate was checked with the formal verification stage.',
+              'No counterexample was found in the configured range.'
+            ].
 
 narrate_proof_trace(evidence(strategies(Strategies),
                              lemmas(Lemmas),
@@ -72,21 +72,21 @@ narrate_proof_trace(_Evidence,
                      'Fallback decision: unavailable.'
                    ]).
 
-visual_rewrite_explanation(sum_formula, Evidence,
-                           [ frame(recursion, 'sum(n) rewrites to sum(n-1)+n, reducing the goal by one.'),
-                             frame(pattern, 'Accumulated values 0,1,3,6,10 form a triangular growth pattern.'),
-                             frame(matrix, 'Gaussian elimination solves Ax=b to recover the polynomial coefficients.'),
-                             frame(formula, FormulaFrame)
-                           ]) :-
+visual_rewrite_explanation(sum_formula, Evidence, Frames) :-
     discovered_formula_text(Evidence, FormulaText),
     format(atom(FormulaFrame), 'Recovered invariant: ~w.', [FormulaText]),
+    Frames = [ frame(recursion, 'sum(n) rewrites to sum(n-1)+n, reducing the goal by one.'),
+               frame(pattern, 'Accumulated values 0,1,3,6,10 form a triangular growth pattern.'),
+               frame(matrix, 'Gaussian elimination solves Ax=b to recover the polynomial coefficients.'),
+               frame(formula, FormulaFrame)
+             ],
     !.
-visual_rewrite_explanation(Theorem, _Evidence,
-                           [ frame(rewrite, 'Rewrite the theorem into smaller obligations.'),
-                             frame(check, 'Validate each obligation with available proof tactics.'),
-                             frame(conclude, Conclusion)
-                           ]) :-
-    format(atom(Conclusion), 'Conclude theorem ~w from validated obligations.', [Theorem]).
+visual_rewrite_explanation(Theorem, _Evidence, Frames) :-
+    format(atom(Conclusion), 'Conclude theorem ~w from validated obligations.', [Theorem]),
+    Frames = [ frame(rewrite, 'Rewrite the theorem into smaller obligations.'),
+               frame(check, 'Validate each obligation with available proof tactics.'),
+               frame(conclude, Conclusion)
+             ].
 
 failure_explanation(_Theorem, proved, 'No failure: theorem was proved.').
 failure_explanation(_Theorem, proved_with_guard, 'No failure: proof succeeded with a counterexample guard.').
