@@ -184,11 +184,17 @@ compress_args([Arg | Rest], SeenIn, SeenOut, [CompressedArg | CompressedRest], D
     compress_args(Rest, SeenMid, SeenOut, CompressedRest, DictMid, DictOut, CounterMid, CounterOut).
 
 
-monotonic_pattern([_], insufficient_data).
-monotonic_pattern([A, B | Rest], Pattern) :-
-    ( B >= A -> monotonic_pattern([B | Rest], Pattern)
-    ; Pattern = mixed
-    ).
+monotonic_pattern([_], insufficient_data) :-
+    !.
+monotonic_pattern(Values, non_decreasing) :-
+    non_decreasing_values(Values),
+    !.
+monotonic_pattern(_Values, mixed).
+
+non_decreasing_values([_]).
+non_decreasing_values([A, B | Rest]) :-
+    B >= A,
+    non_decreasing_values([B | Rest]).
 
 finite_difference_signature(Values, signature(order2_constant(Constant))) :-
     first_differences(Values, First),
