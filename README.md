@@ -250,3 +250,35 @@ File = 'exports/sum_formula.lean'.
 ```bash
 swipl -q -g run_tests -t halt tests/test_stage8.pl
 ```
+
+## Stage 9 implementation
+
+Stage 9 advanced discovery is implemented in:
+
+- `src/stage9_advanced_discovery.pl`
+
+Implemented Stage 9 components:
+
+- graph invariants (`graph_invariants/3`)
+- CFG induction (`cfg_induction/3`)
+- symbolic compression (`symbolic_compression/3`)
+- recursive decomposition (`recursive_decomposition/2`)
+- Spec-to-Algorithm (`spec_to_algorithm/3`)
+- semantic pattern mining (`semantic_pattern_mining/2`)
+- orchestration (`discover_advanced/3`)
+
+### Stage 9 acceptance example
+
+In SWI-Prolog:
+
+```prolog
+?- [src/stage9_advanced_discovery].
+?- discover_advanced(sum_formula, spec(sum_first_n), Report).
+Report = advanced_discovery(_, _, _, _, _, _, _).
+```
+
+### Run Stage 9 tests
+
+```bash
+swipl -q -g run_tests -t halt tests/test_stage9.pl
+```
