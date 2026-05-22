@@ -169,12 +169,13 @@ compress_term(Term, SeenIn, SeenOut, ref(Symbol), DictIn, DictOut, CounterIn, Co
     SeenOut = SeenIn,
     DictOut = DictIn,
     CounterOut = CounterIn.
-compress_term(Term, SeenIn, [seen(Term, Symbol) | SeenNext], compressed(Symbol, CompressedArgs), DictIn,
-              [symbol(Symbol, canonical(Term)) | DictOut], CounterIn, CounterOut) :-
+compress_term(Term, SeenIn, SeenOut, compressed(Symbol, CompressedArgs), DictIn, DictOut, CounterIn, CounterOut) :-
     Term =.. [Functor | Args],
     CounterMid is CounterIn + 1,
     format(atom(Symbol), 's~w_~w', [Functor, CounterMid]),
-    compress_args(Args, SeenIn, SeenNext, CompressedArgs, DictIn, DictOut, CounterMid, CounterOut).
+    SeenOut = [seen(Term, Symbol) | SeenNext],
+    DictOut = [symbol(Symbol, canonical(Term)) | DictNext],
+    compress_args(Args, SeenIn, SeenNext, CompressedArgs, DictIn, DictNext, CounterMid, CounterOut).
 
 compress_args([], Seen, Seen, [], Dict, Dict, Counter, Counter).
 compress_args([Arg | Rest], SeenIn, SeenOut, [CompressedArg | CompressedRest], DictIn, DictOut, CounterIn, CounterOut) :-
