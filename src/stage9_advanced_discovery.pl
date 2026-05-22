@@ -63,7 +63,7 @@ graph_invariants(Edges, FocusNode,
     length(InNeighbors, InDegree),
     ( member(FocusNode, OutNeighbors) -> SelfRecursive = yes ; SelfRecursive = no ),
     reachable_nodes(FocusNode, Edges, ReachableWithSource),
-    delete(ReachableWithSource, FocusNode, Reachable).
+    exclude(=(FocusNode), ReachableWithSource, Reachable).
 
 
 cfg_induction(Program, EntryPred,
@@ -75,7 +75,8 @@ cfg_induction(Program, EntryPred,
 
 
 symbolic_compression(Term, Compressed, Dictionary) :-
-    compress_term(Term, [], _Seen, Compressed, [], Dictionary0, 0, _),
+    compress_term(Term, [], FinalSeen, Compressed, [], Dictionary0, 0, _),
+    length(FinalSeen, _),
     reverse(Dictionary0, Dictionary).
 
 
@@ -156,7 +157,7 @@ topological_hint(Reachable, CallOrder) :-
 
 
 cfg_rule(EntryPred, Program, recursive_induction(decreasing_argument(1, Delta))) :-
-    extract_recurrence(Program, EntryPred, recurrence(_Pred, _Base, step(n, rec(n-Delta)+n))),
+    extract_recurrence(Program, EntryPred, recurrence(_, _, step(n, rec(n-Delta)+n))),
     !.
 cfg_rule(_EntryPred, _Program, structural_induction).
 
@@ -202,7 +203,7 @@ finite_difference_signature(Values, signature(order2_constant(Constant))) :-
     Second = [Constant | Tail],
     all_equal(Tail, Constant),
     !.
-finite_difference_signature(_Values, signature(non_polynomial_or_insufficient_data)).
+finite_difference_signature(_Values, signature(non_quadratic_or_insufficient_data)).
 
 first_differences([_], []).
 first_differences([A, B | Rest], [Diff | Diffs]) :-
