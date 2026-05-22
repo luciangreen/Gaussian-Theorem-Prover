@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gaussian Theorem Prover — Web IDE</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>🔢 Gaussian Theorem Prover</h1>
+    <p>Enter a Prolog-like recursive program to discover and prove its closed-form formula</p>
+  </header>
+
+  <!-- ── Input card ── -->
+  <div class="card">
+    <h2>📝 Input Program <span class="badge">Stage 1</span></h2>
+    <div class="preset-btns">
+      <button class="btn btn-secondary" onclick="loadPreset('sum')">▶ sum(N)</button>
+      <button class="btn btn-secondary" onclick="loadPreset('seq')">▶ seq(N)</button>
+      <button class="btn btn-secondary" onclick="loadPreset('square')">▶ square(N)</button>
+      <button class="btn btn-secondary" onclick="loadPreset('factorial')">▶ factorial(N) — rejected</button>
+    </div>
+    <textarea id="source-input" rows="9" spellcheck="false">sum(0, 0).
+sum(N, S) :-
+    N > 0,
+    N1 is N - 1,
+    sum(N1, S1),
+    S is S1 + N.</textarea>
+    <div class="run-row">
+      <button class="btn btn-primary" id="run-btn" onclick="runPipeline()">▶ Run</button>
+      <span id="status-bar">Ready — click Run to analyse the program.</span>
+    </div>
+  </div>
+
+  <!-- ── Results ── -->
+  <div id="results" class="hidden">
+
+    <!-- Stage 1 : Parse -->
+    <div class="card">
+      <h2>🔬 Parsed Structure <span class="badge">Stage 1 — Parser</span></h2>
+      <div id="parse-result"></div>
+    </div>
+
+    <!-- Stage 2 : Examples -->
+    <div class="card">
+      <h2>📊 Generated Examples <span class="badge">Stage 2 — Example Generator</span></h2>
+      <div id="examples-result"></div>
+    </div>
+
+    <!-- Stages 3–4 : Matrix + Gaussian elimination -->
+    <div class="card" id="card-matrix">
+      <h2>🔢 Gaussian Elimination Matrix <span class="badge">Stages 3–4</span></h2>
+      <div id="matrix-result"></div>
+    </div>
+
+    <!-- Formula -->
+    <div class="card">
+      <h2>📐 Discovered Formula <span class="badge">Stage 4 — Polynomial Discovery</span></h2>
+      <div id="formula-result"></div>
+    </div>
+
+    <!-- Stage 5 : Induction proof -->
+    <div class="card">
+      <h2>✅ Induction Proof <span class="badge">Stage 5 — Verification</span></h2>
+      <div id="proof-result"></div>
+    </div>
+
+    <!-- Stage 6 : Explanation -->
+    <div class="card">
+      <h2>💬 Plain-English Explanation <span class="badge">Stage 6 — Explanation</span></h2>
+      <div id="explanation-result"></div>
+    </div>
+
+  </div><!-- #results -->
+
+</div><!-- .container -->
+
+<script src="app.js"></script>
+</body>
+</html>
