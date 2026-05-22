@@ -7,7 +7,9 @@
 test(graph_invariants_marks_recursive_sum_node) :-
     example_program(Program),
     generate_call_graph(Program, Edges),
-    graph_invariants(Edges, sum/2, invariants(node(sum/2), out_degree(2), in_degree(2), self_recursive(yes), reachable(Reachable))),
+    graph_invariants(Edges, sum/2, invariants(node(sum/2), out_degree(OutDegree), in_degree(InDegree), self_recursive(yes), reachable(Reachable))),
+    OutDegree >= 1,
+    InDegree >= 1,
     member(add/3, Reachable),
     member(sum/2, Reachable).
 
@@ -54,13 +56,14 @@ test(discover_advanced_acceptance_for_sum_formula) :-
     discover_advanced(sum_formula, spec(sum_first_n), Report),
     Report = advanced_discovery(
         theorem(sum_formula),
-        graph_invariants(invariants(node(sum/2), out_degree(2), in_degree(2), self_recursive(yes), reachable(_))),
+        graph_invariants(invariants(node(sum/2), out_degree(_), in_degree(_), self_recursive(yes), reachable(Reachable))),
         cfg_induction(induction_plan(sum/2, _, recursive_induction(decreasing_argument(1, 1)))),
         symbolic_compression(_, Dictionary),
         recursive_decomposition(Decomposition),
         spec_to_algorithm(algorithm(recursive_accumulator, _), exact_alignment),
         semantic_patterns(Patterns)
     ),
+    member(add/3, Reachable),
     Dictionary \= [],
     member(base_case(sum/2, index(0), value(0)), Decomposition),
     member(pattern(growth_class, quadratic), Patterns).

@@ -62,7 +62,8 @@ graph_invariants(Edges, FocusNode,
     length(OutNeighbors, OutDegree),
     length(InNeighbors, InDegree),
     ( member(FocusNode, OutNeighbors) -> SelfRecursive = yes ; SelfRecursive = no ),
-    sort(OutNeighbors, Reachable).
+    reachable_nodes(FocusNode, Edges, ReachableWithSource),
+    delete(ReachableWithSource, FocusNode, Reachable).
 
 
 cfg_induction(Program, EntryPred,
@@ -173,9 +174,9 @@ compress_term(Term, SeenIn, SeenOut, compressed(Symbol, CompressedArgs), DictIn,
     Term =.. [Functor | Args],
     CounterMid is CounterIn + 1,
     format(atom(Symbol), 's~w_~w', [Functor, CounterMid]),
-    SeenOut = [seen(Term, Symbol) | SeenNext],
-    DictOut = [symbol(Symbol, canonical(Term)) | DictNext],
-    compress_args(Args, SeenIn, SeenNext, CompressedArgs, DictIn, DictNext, CounterMid, CounterOut).
+    compress_args(Args, SeenIn, SeenAfterArgs, CompressedArgs, DictIn, DictAfterArgs, CounterMid, CounterOut),
+    SeenOut = [seen(Term, Symbol) | SeenAfterArgs],
+    DictOut = [symbol(Symbol, canonical(Term)) | DictAfterArgs].
 
 compress_args([], Seen, Seen, [], Dict, Dict, Counter, Counter).
 compress_args([Arg | Rest], SeenIn, SeenOut, [CompressedArg | CompressedRest], DictIn, DictOut, CounterIn, CounterOut) :-
@@ -183,7 +184,7 @@ compress_args([Arg | Rest], SeenIn, SeenOut, [CompressedArg | CompressedRest], D
     compress_args(Rest, SeenMid, SeenOut, CompressedRest, DictMid, DictOut, CounterMid, CounterOut).
 
 
-monotonic_pattern([_], non_decreasing).
+monotonic_pattern([_], insufficient_data).
 monotonic_pattern([A, B | Rest], Pattern) :-
     ( B >= A -> monotonic_pattern([B | Rest], Pattern)
     ; Pattern = mixed
