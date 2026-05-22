@@ -282,3 +282,70 @@ Report = advanced_discovery(_, _, _, _, _, _, _).
 ```bash
 swipl -q -g run_tests -t halt tests/test_stage9.pl
 ```
+
+
+## Stage 7 — Web/JavaScript IDE (pr1.txt)
+
+Stage 7 from `pr1.txt` implements the full Gaussian Theorem Prover pipeline as a self-contained browser application with no server-side dependencies.
+
+Files:
+
+- `web/index.html` — browser IDE
+- `web/app.js` — complete JavaScript pipeline
+- `web/style.css` — styling
+
+### What is implemented
+
+All six pipeline stages run entirely in the browser:
+
+| Stage | Component | Description |
+|-------|-----------|-------------|
+| 1 | `PrologParser` | Parses Prolog-like recursive programs into structured AST |
+| 2 | `ExampleGenerator` | Evaluates recursive rules to produce input/output example pairs |
+| 3–4 | `PolynomialDiscovery` + `GaussianElimination` | Builds coefficient matrix and solves for polynomial coefficients using exact rational arithmetic |
+| 5 | `InductionProver` | Verifies the formula via base-case check and inductive-step difference checks |
+| 6 | `ExplanationGenerator` | Produces a plain-English explanation suitable for children and students |
+
+### UI features
+
+- **Text area** for Prolog-like program input
+- **Preset buttons** for `sum(N)`, `seq(N)`, `square(N)`, and `factorial(N)` (rejected example)
+- **Run button** to execute the full pipeline
+- **Parse card** showing predicate, arity, base case, and recurrence
+- **Examples table** with input/output pairs
+- **Gaussian elimination matrix** with animated step-by-step stepper (Prev / Next buttons)
+- **Formula card** showing the discovered polynomial and its coefficients
+- **Induction proof card** with base case and consecutive-difference checks
+- **Explanation card** with child-friendly plain-English narration
+
+### Usage
+
+Open `web/index.html` in any modern browser — no build step or server required.
+
+### Acceptance example
+
+Enter `sum(N)`:
+
+```prolog
+sum(0, 0).
+sum(N, S) :-
+    N > 0,
+    N1 is N - 1,
+    sum(N1, S1),
+    S is S1 + N.
+```
+
+Expected output:
+
+```
+Formula found: f(n) = 1/2*n^2 + 1/2*n
+Proved by induction ✓
+```
+
+### Run Stage 7 JavaScript tests
+
+```bash
+node tests/test_stage7_web.js
+```
+
+(Requires Node.js 18+ for BigInt support.)
