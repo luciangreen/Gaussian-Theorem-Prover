@@ -75,8 +75,7 @@ cfg_induction(Program, EntryPred,
 
 
 symbolic_compression(Term, Compressed, Dictionary) :-
-    compress_term(Term, [], FinalSeen, Compressed, [], Dictionary0, 0, _),
-    length(FinalSeen, _),
+    compress_term(Term, [], _FinalSeen, Compressed, [], Dictionary0, 0, _),
     reverse(Dictionary0, Dictionary).
 
 
@@ -174,7 +173,7 @@ compress_term(Term, SeenIn, SeenOut, ref(Symbol), DictIn, DictOut, CounterIn, Co
 compress_term(Term, SeenIn, SeenOut, compressed(Symbol, CompressedArgs), DictIn, DictOut, CounterIn, CounterOut) :-
     Term =.. [Functor | Args],
     CounterMid is CounterIn + 1,
-    format(atom(Symbol), 's~w_~w', [Functor, CounterMid]),
+    format(atom(Symbol), 'sym_~w_~w', [Functor, CounterMid]),
     compress_args(Args, SeenIn, SeenAfterArgs, CompressedArgs, DictIn, DictAfterArgs, CounterMid, CounterOut),
     SeenOut = [seen(Term, Symbol) | SeenAfterArgs],
     DictOut = [symbol(Symbol, canonical(Term)) | DictAfterArgs].
