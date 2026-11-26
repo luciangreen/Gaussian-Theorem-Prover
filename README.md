@@ -349,3 +349,17 @@ node tests/test_stage7_web.js
 ```
 
 (Requires Node.js 18+ for BigInt support.)
+
+## Proof by induction
+
+`polynomial_induction(Formula, Term, n, Outcome)` proves that Formula is the
+sum of Term from 1 to n for every n: the base case (Formula is 0 at 0) and
+the inductive step (Formula(n+1) - Formula(n) = Term(n+1)). Both sides of the
+step are polynomials of degree at most D, so checking the step exactly, with
+fractions, at D+1 points proves it for all n. A formula that agrees with the
+sum at many values but is wrong, such as n(n+1)/2 + n(n-1)(n-2)(n-3)(n-4)(n-5),
+is not proved.
+
+`mathematical_induction/3` checks a property for each n up to a bound, and
+now reports `checked_up_to(Bound)` rather than `proved`, since a bounded
+check is not a proof. `prove(sum_formula, proved)` uses the inductive proof.
