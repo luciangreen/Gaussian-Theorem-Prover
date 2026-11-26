@@ -2,6 +2,7 @@
           [ prove/1,
             prove/2,
             mathematical_induction/3,
+            polynomial_induction/4,
             structural_induction/3,
             resolution/2,
             solve_constraints/2,
@@ -17,13 +18,20 @@ prove(Theorem) :-
 prove(sum_formula, proved) :-
     verification_bound(MaxN),
     discover_formula(sum, n*(n+1)/2),
-    mathematical_induction(stage4_verification:sum_formula_property, MaxN, proved),
+    % The proof: base case and inductive step for every n (polynomial_induction/4).
+    polynomial_induction(n*(n+1)/2, n, n, proved(_)),
+    % Further checks of the program itself on the first values.
+    mathematical_induction(stage4_verification:sum_formula_property, MaxN, checked_up_to(MaxN)),
     structural_induction(stage4_verification:sum_list_formula_property, [[], [1], [1, 2], [1, 2, 3]], proved),
     resolution([[not(sum_formula), proven_by_induction], [sum_formula]], proven_by_induction),
     solve_constraints([N in MaxN..MaxN, S #= N*(N+1) div 2], [MaxN, _]),
     \+ counterexample_search(sum_formula_property, 0-MaxN, _).
 
-mathematical_induction(Property, MaxN, proved) :-
+%% mathematical_induction(+Property, +MaxN, -Outcome)
+%% Checks the property for 0 and for each step from K to K+1 up to MaxN.
+%% This is a bounded check, not a proof for every n, so the outcome is
+%% checked_up_to(MaxN). polynomial_induction/4 gives the proof.
+mathematical_induction(Property, MaxN, checked_up_to(MaxN)) :-
     integer(MaxN),
     MaxN >= 0,
     call(Property, 0),
@@ -31,6 +39,67 @@ mathematical_induction(Property, MaxN, proved) :-
         between(0, MaxN, K),
         inductive_implication(Property, K)
     ).
+
+%% polynomial_induction(+Formula, +Term, +Var, -Outcome)
+%% Proves that Formula(Var) is the sum of Term(i) for i from 1 to Var, for
+%% every natural number Var, by induction:
+%%   base case:      Formula(0) = 0, the empty sum;
+%%   inductive step: Formula(Var+1) - Formula(Var) = Term(Var+1) for all Var.
+%% Both sides of the step are polynomials in Var of degree at most D (the
+%% degree of Formula), so their difference is a polynomial of degree at most
+%% D. A polynomial of degree at most D that is zero at D+1 distinct points is
+%% zero everywhere, so checking the step exactly (with fractions) at
+%% Var = 0, ..., D proves it for all Var. Outcome is
+%% proved(base_case(0), inductive_step(degree(D), zero_at(Points))) or
+%% not_proved(Reason).
+polynomial_induction(Formula, Term, Var, Outcome) :-
+    (   poly_degree(Formula, Var, D),
+        poly_degree(Term, Var, DT)
+    ->  (   r_eval(Formula, Var, r(0, 1), r(F0, _)), F0 =\= 0
+        ->  Outcome = not_proved(base_case_not_zero)
+        ;   Deg is max(D, DT + 1),
+            numlist(0, Deg, Points),
+            (   forall(member(K, Points),
+                       ( K1 is K + 1,
+                         r_eval(Formula, Var, r(K1, 1), A),
+                         r_eval(Formula, Var, r(K, 1), B),
+                         r_eval(Term, Var, r(K1, 1), C),
+                         r_sub(A, B, Diff),
+                         r_eq(Diff, C) ))
+            ->  Outcome = proved(base_case(0), inductive_step(degree(Deg), zero_at(Points)))
+            ;   Outcome = not_proved(inductive_step_fails)
+            )
+        )
+    ;   Outcome = not_proved(not_a_polynomial)
+    ).
+
+% Degree of a polynomial expression in Var (fails if it is not one).
+poly_degree(X, Var, 1) :- X == Var, !.
+poly_degree(X, _, 0) :- number(X), !.
+poly_degree(A+B, V, D) :- !, poly_degree(A, V, DA), poly_degree(B, V, DB), D is max(DA, DB).
+poly_degree(A-B, V, D) :- !, poly_degree(A, V, DA), poly_degree(B, V, DB), D is max(DA, DB).
+poly_degree(-A, V, D) :- !, poly_degree(A, V, D).
+poly_degree(A*B, V, D) :- !, poly_degree(A, V, DA), poly_degree(B, V, DB), D is DA + DB.
+poly_degree(A/B, V, D) :- !, poly_degree(B, V, 0), poly_degree(A, V, D).
+poly_degree(A^K, V, D) :- integer(K), K >= 0, !, poly_degree(A, V, DA), D is DA * K.
+
+% Exact evaluation with fractions r(Numerator, Denominator).
+r_eval(X, Var, Value, Value) :- X == Var, !.
+r_eval(X, _, _, r(X, 1)) :- integer(X), !.
+r_eval(A+B, V, X, R) :- !, r_eval(A, V, X, RA), r_eval(B, V, X, RB), r_add(RA, RB, R).
+r_eval(A-B, V, X, R) :- !, r_eval(A, V, X, RA), r_eval(B, V, X, RB), r_sub(RA, RB, R).
+r_eval(-A, V, X, R) :- !, r_eval(A, V, X, RA), r_sub(r(0, 1), RA, R).
+r_eval(A*B, V, X, R) :- !, r_eval(A, V, X, RA), r_eval(B, V, X, RB), r_mul(RA, RB, R).
+r_eval(A/B, V, X, R) :- !, r_eval(A, V, X, RA), r_eval(B, V, X, r(BN, BD)), BN =\= 0, r_mul(RA, r(BD, BN), R).
+r_eval(A^K, V, X, R) :- integer(K), K >= 0, !, r_eval(A, V, X, RA), r_pow(RA, K, R).
+
+r_norm(r(N, D), r(N1, D1)) :- G is gcd(N, D), ( D < 0 -> S = -1 ; S = 1 ), N1 is S*N // G, D1 is S*D // G.
+r_add(r(A, B), r(C, D), R) :- N is A*D + C*B, M is B*D, r_norm(r(N, M), R).
+r_sub(r(A, B), r(C, D), R) :- N is A*D - C*B, M is B*D, r_norm(r(N, M), R).
+r_mul(r(A, B), r(C, D), R) :- N is A*C, M is B*D, r_norm(r(N, M), R).
+r_pow(_, 0, r(1, 1)) :- !.
+r_pow(R, K, P) :- K1 is K - 1, r_pow(R, K1, P1), r_mul(R, P1, P).
+r_eq(r(A, B), r(C, D)) :- A*D =:= C*B.
 
 structural_induction(Property, Samples, proved) :-
     is_list(Samples),
